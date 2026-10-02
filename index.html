@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Fest | Around the World</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f8ff;color:#17213b;line-height:1.6}
+header{background:linear-gradient(135deg,#101c4d,#3155d9,#12a6a6);color:white;padding:70px 20px;text-align:center}
+header h1{font-size:clamp(2.5rem,7vw,5rem);letter-spacing:2px}
+header p{font-size:1.2rem;max-width:800px;margin:15px auto}
+nav{position:sticky;top:0;z-index:10;background:#fff;box-shadow:0 3px 15px #0002;padding:12px;text-align:center}
+nav a{color:#17213b;text-decoration:none;margin:0 12px;font-weight:bold}
+.container{max-width:1200px;margin:auto;padding:35px 18px}
+.intro{text-align:center;margin-bottom:30px}
+.intro h2{font-size:2.2rem}
+.controls{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:25px 0}
+input,select{padding:13px 16px;border:2px solid #dce3f5;border-radius:12px;font-size:16px;background:white}
+input{width:min(500px,100%)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 8px 25px #14245d18;transition:.25s;border:1px solid #e8ecf7}
+.card:hover{transform:translateY(-5px);box-shadow:0 14px 32px #14245d25}
+.card .flag{font-size:55px;text-align:center;padding:22px;background:linear-gradient(135deg,#edf2ff,#e8ffff)}
+.card-content{padding:20px}
+.card h3{font-size:1.35rem;margin-bottom:5px}
+.continent{display:inline-block;background:#e8efff;color:#3155d9;padding:4px 9px;border-radius:20px;font-size:.82rem;font-weight:bold;margin-bottom:10px}
+.landmark{margin-top:12px;padding:12px;background:#f4f7ff;border-left:4px solid #3155d9;border-radius:8px}
+.fact{margin-top:10px;color:#52617e;font-size:.95rem}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:30px 0}
+.stat{background:white;border-radius:18px;padding:22px;text-align:center;box-shadow:0 5px 18px #0001}
+.stat strong{display:block;font-size:2rem;color:#3155d9}
+footer{background:#101c4d;color:white;text-align:center;padding:35px 20px;margin-top:50px}
+.hidden{display:none}
+@media(max-width:600px){nav a{display:inline-block;margin:5px}.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>🌍 DIGITAL FEST</h1>
+<p>AROUND THE WORLD — Explore countries, cultures and famous landmarks from every continent.</p>
+</header>
+
+<nav>
+<a href="#home">Home</a>
+<a href="#countries">Countries</a>
+<a href="#about">About</a>
+</nav>
+
+<main class="container" id="home">
+<section class="intro">
+<h2>Welcome to Our Global Journey</h2>
+<p>Discover the world through flags, countries, famous landmarks and fascinating facts.</p>
+</section>
+
+<div class="stats">
+<div class="stat"><strong id="countryCount">0</strong>Countries</div>
+<div class="stat"><strong>7</strong>Continents</div>
+<div class="stat"><strong>🌎</strong>One World</div>
+</div>
+
+<section id="countries">
+<h2 style="text-align:center;margin-bottom:10px">Explore Countries</h2>
+<div class="controls">
+<input id="search" type="search" placeholder="🔎 Search a country or landmark...">
+<select id="continent">
+<option value="all">All continents</option>
+<option>Africa</option><option>Asia</option><option>Europe</option>
+<option>North America</option><option>South America</option>
+<option>Oceania</option><option>Antarctica</option>
+</select>
+</div>
+<div class="grid" id="grid"></div>
+</section>
+
+<section id="about" style="margin-top:50px;text-align:center">
+<h2>🎉 About Digital Fest</h2>
+<p>Our Digital Fest celebrates the diversity of our planet. Explore different countries and learn about places that make each part of the world special.</p>
+</section>
+</main>
+
+<footer>
+<p>🌐 Digital Fest • Around the World</p>
+<p>Created for an educational school project</p>
+</footer>
+
+<script>
+const countries = [
+["🇦🇫","Afghanistan","Asia","Band-e Amir","A spectacular series of blue lakes surrounded by mountains."],
+["🇦🇱","Albania","Europe","Berat Castle","A historic fortress overlooking the city of Berat."],
+["🇩🇿","Algeria","Africa","Tassili n'Ajjer","A vast plateau famous for ancient rock art."],
+["🇦🇩","Andorra","Europe","Casa de la Vall","A historic building in the capital, Andorra la Vella."],
+["🇦🇴","Angola","Africa","Tundavala Gap","A dramatic mountain viewpoint near Lubango."],
+["🇦🇬","Antigua and Barbuda","North America","Nelson's Dockyard","A historic naval dockyard in Antigua."],
+["🇦🇷","Argentina","South America","Perito Moreno Glacier","A spectacular advancing glacier in Patagonia."],
+["🇦🇲","Armenia","Asia","Geghard Monastery","A historic monastery partly carved into rock."],
+["🇦🇺","Australia","Oceania","Sydney Opera House","An internationally recognized performing arts landmark."],
+["🇦🇹","Austria","Europe","Schönbrunn Palace","A grand historic palace in Vienna."],
+["🇦🇿","Azerbaijan","Asia","Maiden Tower","A famous historic tower in Baku's Old City."],
+["🇧🇸","Bahamas","North America","Queen's Staircase","A historic staircase carved from limestone in Nassau."],
+["🇧🇭","Bahrain","Asia","Bahrain Fort","A major archaeological and historic site near Manama."],
+["🇧🇩","Bangladesh","Asia","Sundarbans","The world's largest mangrove forest region."],
+["🇧🇧","Barbados","North America","Harrison's Cave","A spectacular limestone cave system."],
+["🇧🇾","Belarus","Europe","Mir Castle","A UNESCO-listed castle complex."],
+["🇧🇪","Belgium","Europe","Grand Place","Brussels' celebrated historic central square."],
+["🇧🇿","Belize","North America","Great Blue Hole","A famous deep marine sinkhole."],
+["🇧🇯","Benin","Africa","Royal Palaces of Abomey","Historic palaces of the former Kingdom of Dahomey."],
+["🇧🇹","Bhutan","Asia","Tiger's Nest","A famous monastery built on a dramatic cliff."],
+["🇧🇴","Bolivia","South America","Salar de Uyuni","The world's largest salt flat."],
+["🇧🇦","Bosnia and Herzegovina","Europe","Stari Most","The historic Old Bridge of Mostar."],
+["🇧🇼","Botswana","Africa","Okavango Delta","A unique inland delta rich in wildlife."],
+["🇧🇷","Brazil","South America","Christ the Redeemer","A monumental statue overlooking Rio de Janeiro."],
+["🇧🇳","Brunei","Asia","Omar Ali Saifuddien Mosque","A landmark mosque in Bandar Seri Begawan."],
+["🇧🇬","Bulgaria","Europe","Rila Monastery","A famous Orthodox monastery in the mountains."],
+["🇧🇫","Burkina Faso","Africa","Grand Mosque of Bobo-Dioulasso","A notable earthen mosque in western Burkina Faso."],
+["🇧🇮","Burundi","Africa","Kibira National Park","A protected mountain forest rich in biodiversity."],
+["🇨🇻","Cabo Verde","Africa","Pico do Fogo","A volcanic peak on Fogo Island."],
+["🇰🇭","Cambodia","Asia","Angkor Wat","A world-famous temple complex near Siem Reap."],
+["🇨🇲","Cameroon","Africa","Mount Cameroon","A major volcanic mountain near Limbe."],
+["🇨🇦","Canada","North America","CN Tower","A famous communications and observation tower in Toronto."],
+["🇨🇫","Central African Republic","Africa","Dzanga-Sangha","A protected rainforest area known for wildlife."],
+["🇹🇩","Chad","Africa","Ennedi Plateau","A dramatic sandstone landscape in the Sahara."],
+["🇨🇱","Chile","South America","Easter Island Moai","Monumental stone figures on Rapa Nui."],
+["🇨🇳","China","Asia","Great Wall of China","A vast historic defensive structure across northern China."],
+["🇨🇴","Colombia","South America","Cocora Valley","A mountain valley famous for towering wax palms."],
+["🇰🇲","Comoros","Africa","Mount Karthala","One of the world's largest active shield volcanoes."],
+["🇨🇬","Republic of the Congo","Africa","Odzala-Kokoua National Park","A major rainforest conservation area."],
+["🇨🇷","Costa Rica","North America","Arenal Volcano","A famous volcano surrounded by rainforest."],
+["🇨🇮","Côte d'Ivoire","Africa","Basilica of Our Lady of Peace","A huge basilica in Yamoussoukro."],
+["🇭🇷","Croatia","Europe","Dubrovnik Old Town","A historic walled city on the Adriatic coast."],
+["🇨🇺","Cuba","North America","Old Havana","A historic district known for colorful architecture."],
+["🇨🇾","Cyprus","Europe","Paphos Archaeological Park","A major archaeological site with ancient mosaics."],
+["🇨🇿","Czechia","Europe","Prague Castle","A historic castle complex above Prague."],
+["🇰🇵","North Korea","Asia","Kumsusan Palace","A major landmark complex in Pyongyang."],
+["🇨🇩","DR Congo","Africa","Virunga National Park","A famous protected area near the Virunga Mountains."],
+["🇩🇰","Denmark","Europe","Nyhavn","A colorful historic harbor in Copenhagen."],
+["🇩🇯","Djibouti","Africa","Lake Assal","A striking salt lake below sea level."],
+["🇩🇲","Dominica","North America","Boiling Lake","A famous geothermal lake in Morne Trois Pitons."],
+["🇩🇴","Dominican Republic","North America","Zona Colonial","A historic district in Santo Domingo."],
+["🇪🇨","Ecuador","South America","Galápagos Islands","An extraordinary archipelago known for unique wildlife."],
+["🇪🇬","Egypt","Africa","Pyramids of Giza","Ancient pyramids and one of the world's best-known landmarks."],
+["🇸🇻","El Salvador","North America","Santa Ana Volcano","A striking volcano near the country's western highlands."],
+["🇬🇶","Equatorial Guinea","Africa","Monte Alén National Park","A rainforest park rich in biodiversity."],
+["🇪🇷","Eritrea","Africa","Asmara","A capital famous for modernist Italian-era architecture."],
+["🇪🇪","Estonia","Europe","Tallinn Old Town","A remarkably preserved medieval city center."],
+["🇸🇿","Eswatini","Africa","Mlilwane Wildlife Sanctuary","A scenic protected wildlife area."],
+["🇪🇹","Ethiopia","Africa","Lalibela","Famous rock-hewn churches carved from volcanic rock."],
+["🇫🇯","Fiji","Oceania","Sigatoka Sand Dunes","A protected coastal landscape on Viti Levu."],
+["🇫🇮","Finland","Europe","Helsinki Cathedral","A landmark neoclassical cathedral in Helsinki."],
+["🇫🇷","France","Europe","Eiffel Tower","Paris's iconic iron tower."],
+["🇬🇦","Gabon","Africa","Loango National Park","A coastal park known for forests, beaches and wildlife."],
+["🇬🇲","Gambia","Africa","Kunta Kinteh Island","A historic island on the Gambia River."],
+["🇬🇪","Georgia","Asia","Gergeti Trinity Church","A famous church beneath Mount Kazbek."],
+["🇩🇪","Germany","Europe","Brandenburg Gate","A landmark neoclassical gate in Berlin."],
+["🇬🇭","Ghana","Africa","Cape Coast Castle","A historic coastal fortress."],
+["🇬🇷","Greece","Europe","Acropolis of Athens","An ancient citadel above Athens."],
+["🇬🇩","Grenada","North America","Grand Anse Beach","A famous beach near St. George's."],
+["🇬🇹","Guatemala","North America","Tikal","An ancient Maya city surrounded by rainforest."],
+["🇬🇳","Guinea","Africa","Mount Nimba","A biodiversity-rich mountain region."],
+["🇬🇼","Guinea-Bissau","Africa","Orango Islands","A protected archipelago with important wildlife habitats."],
+["🇬🇾","Guyana","South America","Kaieteur Falls","A spectacular waterfall in the Guiana Highlands."],
+["🇭🇹","Haiti","North America","Citadelle Laferrière","A massive historic fortress in the mountains."],
+["🇭🇳","Honduras","North America","Copán","A renowned ancient Maya archaeological site."],
+["🇭🇺","Hungary","Europe","Hungarian Parliament","A grand riverside landmark in Budapest."],
+["🇮🇸","Iceland","Europe","Blue Lagoon","A famous geothermal spa in a volcanic landscape."],
+["🇮🇳","India","Asia","Taj Mahal","A world-famous marble mausoleum in Agra."],
+["🇮🇩","Indonesia","Asia","Borobudur","A monumental Buddhist temple in Central Java."],
+["🇮🇷","Iran","Asia","Persepolis","The ruins of an ancient Persian ceremonial capital."],
+["🇮🇶","Iraq","Asia","Ziggurat of Ur","A remarkable ancient Mesopotamian monument."],
+["🇮🇪","Ireland","Europe","Cliffs of Moher","Dramatic sea cliffs on Ireland's west coast."],
+["🇮🇱","Israel","Asia","Old City of Jerusalem","A historic walled city with major cultural landmarks."],
+["🇮🇹","Italy","Europe","Colosseum","An ancient Roman amphitheater in Rome."],
+["🇯🇲","Jamaica","North America","Dunn's River Falls","A famous cascading waterfall near Ocho Rios."],
+["🇯🇵","Japan","Asia","Mount Fuji","Japan's iconic volcanic mountain."],
+["🇯🇴","Jordan","Asia","Petra","An ancient city carved into rose-colored rock."],
+["🇰🇿","Kazakhstan","Asia","Charyn Canyon","A spectacular canyon landscape in southeastern Kazakhstan."],
+["🇰🇪","Kenya","Africa","Mount Kenya","A major mountain and UNESCO-listed natural site."],
+["🇰🇮","Kiribati","Oceania","Phoenix Islands","A remote island group and protected marine area."],
+["🇰🇼","Kuwait","Asia","Kuwait Towers","Iconic towers overlooking Kuwait City."],
+["🇰🇬","Kyrgyzstan","Asia","Issyk-Kul","A large alpine lake surrounded by mountains."],
+["🇱🇦","Laos","Asia","Pha That Luang","A golden Buddhist stupa in Vientiane."],
+["🇱🇻","Latvia","Europe","Riga Old Town","A historic center with medieval and Art Nouveau architecture."],
+["🇱🇧","Lebanon","Asia","Baalbek","Ancient Roman temples in the Bekaa Valley."],
+["🇱🇸","Lesotho","Africa","Maletsunyane Falls","A spectacular waterfall in the highlands."],
+["🇱🇷","Liberia","Africa","Providence Island","A historic site connected with Liberia's founding."],
+["🇱🇾","Libya","Africa","Leptis Magna","Remarkably preserved ancient Roman ruins."],
+["🇱🇮","Liechtenstein","Europe","Vaduz Castle","A castle overlooking the capital Vaduz."],
+["🇱🇹","Lithuania","Europe","Trakai Island Castle","A medieval castle on an island in a lake."],
+["🇱🇺","Luxembourg","Europe","Luxembourg Old Quarters","Historic fortifications and old-town districts."],
+["🇲🇬","Madagascar","Africa","Avenue of the Baobabs","A famous avenue lined with giant baobab trees."],
+["🇲🇼","Malawi","Africa","Lake Malawi","A large freshwater lake known for clear waters."],
+["🇲🇾","Malaysia","Asia","Petronas Twin Towers","Iconic twin skyscrapers in Kuala Lumpur."],
+["🇲🇻","Maldives","Asia","Hukuru Miskiy","A historic coral-stone mosque in Malé."],
+["🇲🇱","Mali","Africa","Great Mosque of Djenné","A celebrated mud-brick mosque."],
+["🇲🇹","Malta","Europe","Ħaġar Qim","Prehistoric megalithic temple ruins."],
+["🇲🇭","Marshall Islands","Oceania","Bikini Atoll","A historic atoll and World Heritage site."],
+["🇲🇷","Mauritania","Africa","Chinguetti","A historic desert town and center of Islamic scholarship."],
+["🇲🇺","Mauritius","Africa","Le Morne Brabant","A dramatic mountain and cultural landscape."],
+["🇲🇽","Mexico","North America","Chichén Itzá","A famous Maya archaeological city."],
+["🇫🇲","Micronesia","Oceania","Nan Madol","Ancient ruins built on artificial islets."],
+["🇲🇩","Moldova","Europe","Orheiul Vechi","A historic cultural landscape carved into limestone."],
+["🇲🇨","Monaco","Europe","Monte Carlo Casino","A renowned Belle Époque landmark."],
+["🇲🇳","Mongolia","Asia","Genghis Khan Statue Complex","A monumental equestrian statue complex."],
+["🇲🇪","Montenegro","Europe","Bay of Kotor","A dramatic bay surrounded by mountains and historic towns."],
+["🇲🇦","Morocco","Africa","Hassan II Mosque","A major mosque overlooking the Atlantic in Casablanca."],
+["🇲🇿","Mozambique","Africa","Island of Mozambique","A historic island with Portuguese-era architecture."],
+["🇲🇲","Myanmar","Asia","Bagan","A vast plain filled with ancient Buddhist temples."],
+["🇳🇦","Namibia","Africa","Sossusvlei","Famous red dunes in the Namib Desert."],
+["🇳🇷","Nauru","Oceania","Buada Lagoon","A small inland freshwater lagoon."],
+["🇳🇵","Nepal","Asia","Mount Everest","The world's highest mountain."],
+["🇳🇱","Netherlands","Europe","Kinderdijk Windmills","Historic windmills illustrating Dutch water management."],
+["🇳🇿","New Zealand","Oceania","Milford Sound","A spectacular fjord in Fiordland."],
+["🇳🇮","Nicaragua","North America","Masaya Volcano","An active volcano near Managua."],
+["🇳🇪","Niger","Africa","Air Mountains","A dramatic mountain range in the Sahara."],
+["🇳🇬","Nigeria","Africa","Zuma Rock","A huge monolith near Abuja."],
+["🇲🇰","North Macedonia","Europe","Lake Ohrid","An ancient lake surrounded by historic towns."],
+["🇳🇴","Norway","Europe","Geirangerfjord","A spectacular fjord landscape."],
+["🇴🇲","Oman","Asia","Sultan Qaboos Grand Mosque","A major mosque and architectural landmark in Muscat."],
+["🇵🇰","Pakistan","Asia","Faisal Mosque","A distinctive mosque in Islamabad."],
+["🇵🇼","Palau","Oceania","Rock Islands","A stunning group of limestone islands and lagoons."],
+["🇵🇦","Panama","North America","Panama Canal","A globally important canal linking two oceans."],
+["🇵🇬","Papua New Guinea","Oceania","Kokoda Track","A famous historic mountain trail."],
+["🇵🇾","Paraguay","South America","Jesuit Missions","Historic mission ruins in southern Paraguay."],
+["🇵🇪","Peru","South America","Machu Picchu","An iconic Inca citadel in the Andes."],
+["🇵🇭","Philippines","Asia","Banaue Rice Terraces","Ancient terraces carved into mountain slopes."],
+["🇵🇱","Poland","Europe","Wawel Castle","A historic castle complex in Kraków."],
+["🇵🇹","Portugal","Europe","Belém Tower","A historic tower beside the Tagus in Lisbon."],
+["🇶🇦","Qatar","Asia","Museum of Islamic Art","A landmark museum on Doha's waterfront."],
+["🇷🇴","Romania","Europe","Bran Castle","A famous castle in Transylvania."],
+["🇷🇺","Russia","Europe","Saint Basil's Cathedral","A distinctive cathedral on Red Square in Moscow."],
+["🇷🇼","Rwanda","Africa","Volcanoes National Park","A mountain park famous for gorilla conservation."],
+["🇰🇳","Saint Kitts and Nevis","North America","Brimstone Hill Fortress","A historic fortress on Saint Kitts."],
+["🇱🇨","Saint Lucia","North America","Pitons","Two dramatic volcanic peaks beside the Caribbean Sea."],
+["🇻🇨","Saint Vincent and the Grenadines","North America","La Soufrière","A volcanic peak on Saint Vincent."],
+["🇼🇸","Samoa","Oceania","To Sua Ocean Trench","A spectacular natural swimming hole."],
+["🇸🇲","San Marino","Europe","Guaita Tower","The oldest of San Marino's three towers."],
+["🇸🇹","São Tomé and Príncipe","Africa","Pico Cão Grande","A striking volcanic rock spire."],
+["🇸🇦","Saudi Arabia","Asia","Hegra","Ancient Nabataean tombs in AlUla."],
+["🇸🇳","Senegal","Africa","Gorée Island","A historic island off Dakar."],
+["🇷🇸","Serbia","Europe","Belgrade Fortress","A historic fortress at the meeting of two rivers."],
+["🇸🇨","Seychelles","Africa","Vallée de Mai","A famous palm forest on Praslin."],
+["🇸🇱","Sierra Leone","Africa","Tacugama Sanctuary","A wildlife sanctuary near Freetown."],
+["🇸🇬","Singapore","Asia","Gardens by the Bay","Futuristic gardens famous for their Supertrees."],
+["🇸🇰","Slovakia","Europe","Bratislava Castle","A hilltop castle overlooking Bratislava."],
+["🇸🇮","Slovenia","Europe","Lake Bled","A scenic alpine lake with an island church."],
+["🇸🇧","Solomon Islands","Oceania","Marovo Lagoon","A huge tropical lagoon and island landscape."],
+["🇸🇴","Somalia","Africa","Laas Geel","Rock shelters containing ancient paintings."],
+["🇿🇦","South Africa","Africa","Table Mountain","An iconic flat-topped mountain above Cape Town."],
+["🇰🇷","South Korea","Asia","Gyeongbokgung Palace","A major Joseon-era palace in Seoul."],
+["🇸🇸","South Sudan","Africa","Boma National Park","A large protected wilderness area."],
+["🇪🇸","Spain","Europe","Sagrada Família","Barcelona's famous basilica designed by Antoni Gaudí."],
+["🇱🇰","Sri Lanka","Asia","Sigiriya","An ancient rock fortress with dramatic views."],
+["🇸🇩","Sudan","Africa","Meroë Pyramids","Ancient pyramids from the Kingdom of Kush."],
+["🇸🇷","Suriname","South America","Historic Inner City of Paramaribo","A historic district known for wooden architecture."],
+["🇸🇪","Sweden","Europe","Vasa Museum","A museum built around a remarkably preserved warship."],
+["🇨🇭","Switzerland","Europe","Matterhorn","One of the world's most recognizable mountain peaks."],
+["🇸🇾","Syria","Asia","Ancient City of Damascus","One of the world's historic urban centers."],
+["🇹🇯","Tajikistan","Asia","Pamir Mountains","High mountain landscapes in Central Asia."],
+["🇹🇿","Tanzania","Africa","Mount Kilimanjaro","Africa's highest mountain."],
+["🇹🇭","Thailand","Asia","Grand Palace","A major historic complex in Bangkok."],
+["🇹🇱","Timor-Leste","Asia","Cristo Rei of Dili","A large statue overlooking Dili."],
+["🇹🇬","Togo","Africa","Koutammakou","A cultural landscape famous for traditional tower houses."],
+["🇹🇴","Tonga","Oceania","Ha'amonga 'a Maui","A monumental stone trilithon."],
+["🇹🇹","Trinidad and Tobago","North America","Pitch Lake","A remarkable natural asphalt lake."],
+["🇹🇳","Tunisia","Africa","El Jem Amphitheatre","A huge Roman amphitheater."],
+["🇹🇷","Türkiye","Europe","Hagia Sophia","A landmark historic building in Istanbul."],
+["🇹🇲","Turkmenistan","Asia","Darvaza Gas Crater","A well-known gas crater in the Karakum Desert."],
+["🇹🇻","Tuvalu","Oceania","Funafuti Lagoon","A beautiful lagoon surrounding the capital atoll."],
+["🇺🇬","Uganda","Africa","Murchison Falls","A powerful waterfall on the Nile."],
+["🇺🇦","Ukraine","Europe","Saint Sophia's Cathedral","A historic cathedral in Kyiv."],
+["🇦🇪","United Arab Emirates","Asia","Burj Khalifa","The world's tallest building, in Dubai."],
+["🇬🇧","United Kingdom","Europe","Tower of London","A historic fortress beside the River Thames."],
+["🇺🇸","United States","North America","Statue of Liberty","An iconic monument in New York Harbor."],
+["🇺🇾","Uruguay","South America","Casapueblo","A distinctive white coastal building and art space."],
+["🇺🇿","Uzbekistan","Asia","Registan Square","A spectacular historic square in Samarkand."],
+["🇻🇺","Vanuatu","Oceania","Mount Yasur","An accessible active volcano on Tanna Island."],
+["🇻🇦","Vatican City","Europe","St. Peter's Basilica","A major Renaissance and Baroque basilica."],
+["🇻🇪","Venezuela","South America","Angel Falls","The world's highest uninterrupted waterfall."],
+["🇻🇳","Vietnam","Asia","Ha Long Bay","A famous seascape of limestone islands and emerald water."],
+["🇾🇪","Yemen","Asia","Old City of Sana'a","Historic tower houses and traditional architecture."],
+["🇿🇲","Zambia","Africa","Victoria Falls","One of the world's great waterfalls."],
+["🇿🇼","Zimbabwe","Africa","Great Zimbabwe","Ancient stone ruins of a historic city."],
+["🇻🇺","Vanuatu","Oceania","Mount Yasur","An active volcanic landmark on Tanna Island."],
+["🇦🇶","Antarctica","Antarctica","McMurdo Station","A major scientific research station in Antarctica."]
+];
+
+const grid=document.getElementById("grid"), search=document.getElementById("search"), continent=document.getElementById("continent");
+document.getElementById("countryCount").textContent = new Set(countries.map(x=>x[1])).size;
+
+function render(){
+ const q=search.value.toLowerCase().trim(), c=continent.value;
+ grid.innerHTML="";
+ countries.filter(x=>(c==="all"||x[2]===c)&&(!q||x[1].toLowerCase().includes(q)||x[3].toLowerCase().includes(q))).forEach(x=>{
+   const card=document.createElement("article"); card.className="card";
+   card.innerHTML=`<div class="flag">${x[0]}</div><div class="card-content">
+   <span class="continent">${x[2]}</span><h3>${x[1]}</h3>
+   <div class="landmark"><strong>🏛️ ${x[3]}</strong><br>${x[4]}</div>
+   <div class="fact">🌐 Explore the culture, history and geography of ${x[1]} at Digital Fest.</div>
+   </div>`;
+   grid.appendChild(card);
+ });
+}
+search.addEventListener("input",render); continent.addEventListener("change",render); render();
+</script>
+</body>
+</html>
